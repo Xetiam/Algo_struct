@@ -1,0 +1,15 @@
+5
+rue
+Guy de la Brosse
+Paris
+75005
+15
+avenue
+général Charles de Gaulles
+Lyon
+69000
+5
+Avenue
+du Colonel Fabien
+Saint-Denis
+93210

@@ -1,0 +1,6 @@
+//////////////////////////////////////////////////////////////
+/// Auteur : Lepiller Charly //////////// Date : 31/01/2020///
+//////////////////////////////////////////////////////////////
+typedef char* string;
+typedef struct{string mot; string cat;}base;
+typedef struct French {base* traduction; struct French* cdr;}*traductions;

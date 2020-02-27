@@ -5,7 +5,7 @@
 #Maquette en python du traducteur
 
 import sys
-
+#Fonction pour formater les donnees et pouvoir y acceder
 def formatageDico(m) :
 	motPrec = ""
 	if(m == 0):
@@ -25,7 +25,7 @@ def formatageDico(m) :
 			dicoTrad[0].append(partFr)
 			dicoTrad[1].append(partIt)
 	return(dicoTrad)
-
+#Recherche et construction des differentes occurences du mot chercher
 def findTrad(mot,dicoTrad,m) :
 	if m == 0 :
 		tailleDico = 6901
@@ -37,9 +37,9 @@ def findTrad(mot,dicoTrad,m) :
 			tabRang.append(i)
 			
 	return tabRang
-
+#Fonction d affichage
 def afficheTrad(tabRang,dicoTrad) :
-	print(dicoTrad[0][tabRang[0]][0]+ " " +dicoTrad[0][tabRang[0]][1] + " se dit : "),
+	print(dicoTrad[0][tabRang[0]][0]+" se dit "),
 	for i in range(0,len(tabRang)) :
 		print(dicoTrad[0][tabRang[i]][1]),
 		print(":"),
@@ -54,11 +54,13 @@ exit = False
 wantexit = 0
 #Boucle du processus pour traduire plusieurs mot
 while(exit != True):
-	choiceTrad = input("Veuillez choisir :\n\t1. Fr vers It\n\t2. It vers Fr\n\t")
-	if choiceTrad == 1:# Fr vers It
+	choiceTrad = input("Veuillez choisir :\n\t1. Fr vers It\n\t2. It vers Fr\n\t3. Sortir\n\t")
+	if choiceTrad == 3 :
+		exit = True
+	elif choiceTrad == 1:# Fr vers It
 		m = 0
 		dicoTrad = formatageDico(m)
-		mot = input("Fr vers It (entre guillemmet) :")
+		mot = input("Fr vers It (entre guillemmet) : \n\t")
 		tabRang = []
 		tabRang = findTrad(mot,dicoTrad,m)
 		if tabRang != []:

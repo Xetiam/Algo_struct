@@ -5,10 +5,11 @@
 
 
 int main(int argc, string argv[]){
-	entry dicoEntry = formatageDico(1);
-	for(int i = 0 ; i < 12 ; i++){
-		printf("%s %s : 0000\n",original(dicoEntry-i).mot, original(dicoEntry).cat);
+	entry const dicoEntry = formatageDico("./tabDico/échantillon.tab");
+	entry tempDicoEntry = dicoEntry;
+	for(int i = 0 ; i < 72 ; i++){
+		printf("%s %s : \n",tempDicoEntry->original.mot,tempDicoEntry->original.cat);
+		tempDicoEntry = cdr(tempDicoEntry);
 	}
-	
 	return 0;
 }

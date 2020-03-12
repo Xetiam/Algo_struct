@@ -23,31 +23,61 @@ int decoupe(char* ligne, char* separ, char* mot[], int maxmot){
 		if(i==maxmot){
 			fprintf(stderr, "Erreur dans la fonction decoupe : trop de mot\n");
 			mot[i-1] = 0;
-			break;
 		}
-		mot[i] = strtok(NULL,separ);
+		else
+			mot[i] = strtok(NULL,separ);
 	}
 	return i;
 }
 
+/* Fonction de construction part Original d'une entry */
+base consEntryOr(string* eltOr){
+	struct Base Cons;
+	Cons.mot = eltOr[0];
+	Cons.cat = eltOr[1];
+	return Cons;
+}
 
-void formatageDico(int mode){
-	char* ligne = (char*) malloc(TAILLE_MAX*sizeof(char*));
-	char** mot = (char**) malloc(TAILLE_MAX*sizeof(char**));
-	FILE* dico = ffopen("francais-italien_snp.tab","r");
-	entry* francais_italien = NULL;
-	entry italien_francais = NULL;
-	for(int i =0; fgets(ligne, TAILLE_MAX, dico); i++){
-		decoupe(ligne," -\t", mot, TAILLE_MAX);
-		if(mode == 1){
-			cdr(francais_italien) = 
-			original(francais_italien).mot = mot[0];
-			original(francais_italien).cat = mot[1];
-			printf("%s %s :\n",original(francais_italien).mot,original(francais_italien).cat);
-		}
-		else if(mode == 2){
+/* Fonction de construction part Traductions d'une entry */
 
-		}
+/* Fonction de construction du cdr d'une entry */
+struct Entry* consEntryCdr(entry entry){
+	struct Entry* Cons = (struct Entry*) malloc(TAILLE_MAX*sizeof(struct Entry*));
+	Cons = entry;
+	return Cons;
+}
+
+/* Fonction pour formater le dictionnaire dans une structure permettant un accessibilité facile */
+entry formatageDico(int mode){
+	/* Initialisation des variables */
+	FILE* dico = ffopen("échantillon.tab","r");
+	string ligne = (string) malloc(TAILLE_MAX*sizeof(string));
+	string* lignesepar = (string*) malloc(TAILLE_MAX*sizeof(string*));
+	string* tabOr = NULL;
+	string* tabTr = NULL;
+	base temp;
+	entry dicoEntry = (entry) malloc(TAILLE_MAXD*sizeof(entry));
+	/* Boucle de découpage et de formatage du dictionnaire */
+	for(int i = 0 ; fgets(ligne,TAILLE_MAX,dico); i++){
+		tabOr = (string*) malloc(TAILLE_MAX*sizeof(string*));
+		tabTr = (string*) malloc(TAILLE_MAX*sizeof(string*));
+		/* Découpage de la ligne du dico*/
+		decoupe(ligne,"-",lignesepar, TAILLE_MAX);
+		decoupe(lignesepar[0],"\t",tabOr,TAILLE_MAX);
+		decoupe(lignesepar[1]," ",tabTr,TAILLE_MAX);
+		temp = consEntryOr(tabOr);
+		original(dicoEntry) = temp;
+		cdr(dicoEntry) = consEntryCdr(dicoEntry+i);
+		//traiter les traductions suivantes si elles existent
+		tabOr = NULL;
+		tabTr = NULL;
 	}
-	return;
+	fclose(dico);
+
+	/* Libération de la mémoire et renvoie du dictionnaire formater */
+	free(ligne);
+	free(lignesepar);
+	free(tabOr);
+	free(tabTr);
+	return dicoEntry;
 }

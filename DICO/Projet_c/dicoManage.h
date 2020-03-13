@@ -36,3 +36,6 @@ typedef struct Entry{
 
 /* Fonction pour formater le dictionnaire dans une structure permettant une accessibilité facile */
 entry formatageDico(string tabDico);
+
+/*Fonction qui affiche le mot original et toutes ses traductions */
+void affichEntry(entry entry);

@@ -39,3 +39,6 @@ entry formatageDico(string tabDico);
 
 /*Fonction qui affiche le mot original et toutes ses traductions */
 void affichEntry(entry entry);
+
+/* Fonction pour chercher et renvoyé l'entrée correspondant à la demande utilisateur */
+entry searchEntry(entry dico,string motUser);

@@ -19,15 +19,24 @@ FILE* ffopen(char* arg, char* mode){
 	return fichier;
 }
 
+/* Fonction pour chercher et renvoyé l'entrée correspondant à la demande utilisateur */
+entry searchEntry(entry dico,string motUser){
+	while(strcmp(dico->original.mot,motUser) != 0){
+		dico = dico->cdr;
+	}
+	return dico;
+}//Fonctionne
+
 /*Fonction qui affiche le mot original et toutes ses traductions */
 void affichEntry(entry entry){
-	printf("%s %s :",entry->original.mot,entry->original.cat);
-	while(entry->traductions->traductions->mot != NULL){
+	printf("%s %s :\n",entry->original.mot,entry->original.cat);
+	while(entry->traductions != NULL){
+		printf("Essaie d'afficher une trad\n");
 		printf("\t%s %s",entry->traductions->traductions->mot,entry->traductions->traductions->cat);
 		entry->traductions = entry->traductions->cdr;
 	}
 	return;
-}//fonctionne pas (doute sur les accès de trads)
+}//fonctionne pas (doute sur les accès de trads)(fonctionne pour les originales)
 
 /* Fonction de construction part Traductions d'une entry et qui fait pointer cdr sur la trad suivante si elle existe */
 void getTraduction(string const ligne,base* trad){
@@ -120,14 +129,10 @@ entry formatageDico(string tabDico){
 	tempDicoEntry = origDicoEntry;
 
 
-	int i =0;
-	//printf("Je rentre dans boucle\n");
-
 
 	while(fgets(ligne, TAILLE_MAX, dico) != NULL){
 		//Copie de la ligne dans une chaîne temporaire pour effectuer le test pour savoir si la nouvelle ligne concerne 
 		//une traduction du même mot que précédemment
-		printf("%d\n", i++);
 		tempLigne = (string) malloc(sizeof(ligne));
 		strcpy(tempLigne,ligne);
 
@@ -157,7 +162,7 @@ entry formatageDico(string tabDico){
 		}
 	}
 	return origDicoEntry;
-}//segfault au bout d'un moment (effet de bord de getTrad?)
+}//Accès aux traductions sont pas faisable.(doute sur le bon fonctionnement de cette fonction malgré aucun segfault)
 
 
 

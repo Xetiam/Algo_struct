@@ -5,11 +5,11 @@
 
 
 int main(int argc, string argv[]){
-	entry const dicoEntry = formatageDico("./tabDico/échantillon.tab");
-	entry tempDicoEntry = dicoEntry;
-	for(int i = 0 ; i < 72 ; i++){
-		affichEntry(tempDicoEntry);
-		tempDicoEntry = cdr(tempDicoEntry);
-	}
+	entry dicoEntry = formatageDico("./tabDico/échantillon.tab");
+	printf("Veuillez entré le mot ou l'expression à traduire : \n");
+	string motUser;
+	scanf("%s",motUser);
+	entry entryUser = searchEntry(dicoEntry,motUser);
+	affichEntry(entryUser);
 	return 0;
 }

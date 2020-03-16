@@ -5,7 +5,7 @@
 
 
 int main(int argc, string argv[]){
-	entry const dicoEntry = formatageDico("./tabDico/francais-italien_snp.tab");
+	entry const dicoEntry = formatageDico("./tabDico/échantillon.tab");
 	entry tempDicoEntry = dicoEntry;
 	for(int i = 0 ; i < 72 ; i++){
 		affichEntry(tempDicoEntry);

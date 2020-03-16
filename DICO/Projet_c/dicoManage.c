@@ -98,12 +98,15 @@ void getOriginal(string const ligne, string* mot, string* cat){
 /* Fonction pour formater un .tab dans une liste chainée */
 entry formatageDico(string tabDico){
 	/* Initialisation des variables */
+	FILE* dico = ffopen(tabDico,"r");
 	entry tempDicoEntry = NULL;
+	traductions tempTrad = NULL;
+
 	// Création de la première entrée (Conservation de l'origine de liste car si perdu, je n'ai plus accès à celle ci)
 	entry const origDicoEntry = (struct Entry*) malloc(sizeof(struct Entry*));
-	FILE* dico = ffopen(tabDico,"r");
 	string ligne = (string) malloc(TAILLE_MAX*sizeof(string));
 	string tempLigne = NULL;
+
 	//Acquisition de la première ligne du dictionnaire
 	fgets(ligne, TAILLE_MAX, dico);
 
@@ -112,10 +115,15 @@ entry formatageDico(string tabDico){
 	// Création de la première traduction
 	origDicoEntry->traductions = (struct Traductions*) malloc(sizeof(struct Traductions*));
 	getTraduction(ligne,origDicoEntry->traductions->traductions);
-	affichEntry(origDicoEntry);
+	tempTrad = (traductions) malloc(sizeof(traductions));
+	tempTrad = origDicoEntry->traductions;
 	tempDicoEntry = origDicoEntry;
+
+
 	int i =0;
 	//printf("Je rentre dans boucle\n");
+
+
 	while(fgets(ligne, TAILLE_MAX, dico) != NULL){
 		//Copie de la ligne dans une chaîne temporaire pour effectuer le test pour savoir si la nouvelle ligne concerne 
 		//une traduction du même mot que précédemment
@@ -125,11 +133,21 @@ entry formatageDico(string tabDico){
 
 		//Création du nouvel élmt et déplacement du pointeur sur le suivant à condition que le mot ne soit pas déjà stocker
 		if(strcmp(tempDicoEntry->original.mot, strtok(tempLigne,"\t")) != 0){
+			//Déplacement du pointeur sur trad sur la première trad
+			tempDicoEntry->traductions = tempTrad;
+			tempTrad = NULL;
+
+			//Déplacement du pointeur pour passer à l'entrée du dico suivante
 			tempDicoEntry->cdr = (struct Entry*) malloc(sizeof(struct Entry*));
 			tempDicoEntry = tempDicoEntry->cdr;
 			getOriginal(ligne, &tempDicoEntry->original.mot, &tempDicoEntry->original.cat);
+			
+
+			//Enregistrement de l'adresse de la première traduction.
 			tempDicoEntry->traductions = (struct Traductions*) malloc(sizeof(struct Traductions*));
 			getTraduction(ligne, tempDicoEntry->traductions->traductions);
+			tempTrad = (traductions) malloc(sizeof(traductions));
+			tempTrad = tempDicoEntry->traductions;
 		}
 
 		else{

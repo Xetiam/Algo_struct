@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#define TAILLE_MAX 1000
+#define TAILLE_MAX 100
 
 
 

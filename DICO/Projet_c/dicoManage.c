@@ -135,7 +135,7 @@ entry formatageDico(string tabDico){
 	curDicoEntry = startDicoEntry;
 	
 	//DEBUG
-	int i =0;
+	//int i =0;
 
 	//Boucle de fabrication de la liste
 	while(fgets(ligne,TAILLE_MAX,dico)!=NULL){
@@ -179,8 +179,8 @@ entry formatageDico(string tabDico){
 		}
 
 		//DEBUG
-		printf("%d\n",i);
-		i++;
+		//printf("%d\n",i);
+		//i++;
 		
 	}
 	//Création d'un entrée NULL pour finir le dictionnaire

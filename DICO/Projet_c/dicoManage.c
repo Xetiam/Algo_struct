@@ -2,7 +2,7 @@
 /// Auteur : Lepiller Charly //////////// Date : 31/01/2020///
 //////////////////////////////////////////////////////////////
 #include "dicoManage.h"
-
+/* Prototypes : */
 void getTraduction(string const ligne, string* mot, string* cat);
 void getOriginal(string const ligne,string* mot, string* cat);
 FILE* ffopen(char* arg, char* mode);
@@ -46,66 +46,59 @@ void getTraduction(string const ligne, string* mot, string* cat){
 	//Initialisation des variables
 	int cur = 0;
 	int curCat = 0;
-	string templigne = NULL;
-	// Copie de ligne car constante
-	templigne = (string) malloc(sizeof(ligne));
-	strcpy(templigne,ligne);
-
 	//Parcour de la ligne pour trouver le début de la partie traduction 
 	//ainsi que le début de la catégorie de la trad
-	for(int i = 0 ; i < strlen(templigne) ; i++){
-		if(templigne[i] == '['){
+	for(int i = 0 ; i < strlen(ligne) ; i++){
+		if(ligne[i] == '['){
 			curCat = i;
 		}
-		if(templigne[i] == '-' && templigne[i-1] ==' ' && templigne[i+1] == ' '){
+		if(ligne[i] == '-' && ligne[i-1] ==' ' && ligne[i+1] == ' '){
 			cur = i;
 		}
 	}
+	//Récupération de mot et cat :
+		//mot
+	size_t sizeMot = curCat - cur - 3;
+	*mot = strndup(ligne+cur+2,sizeMot);
+		//cat
+	size_t sizeCat = strlen(ligne) - curCat -1;
+	*cat = strndup(ligne+curCat,sizeCat);
+	
+	//DEBUG
+	//printf("mot : |%s| cat : |%s|\n",*mot,*cat);
 
-	//Déplacement du pointeur sur la ligne pour la copie des caractères de mot
-	templigne = ligne + cur + 2;
-	//printf("templigne : %s\n",templigne);
-	size_t sizeMot =(size_t)(curCat-cur-3);
-	*mot = strndup(templigne,sizeMot);
 
-	//Déplacement du pointeur sur la ligne pour la copie des caractères de cat
-	templigne = ligne + curCat;
-	size_t sizeCat =(size_t)(strlen(templigne)-1);
-	*cat = strndup(templigne, sizeCat);
-	printf("mot(getTrad) : %s|\ncat(getTrad) : %s|\n",*mot,*cat);
 	return;
 }//Fonctionne
+
+
 
 void getOriginal(string const ligne, string* mot, string* cat){
 	//Initialisation des variables
 	int cur = 0;
 	int curCat = 0;
-	string templigne = NULL;
-
-	// Copie de ligne car constante
-
-	templigne = (string) malloc(sizeof(ligne));
-	strcpy(templigne,ligne);
 
 	//Parcour de la ligne pour trouver le début de la partie traduction 
 	//ainsi que le début de la catégorie de la trad
-	for(int i = 0 ; i < strlen(templigne) ; i++){
-		if(templigne[i] == '\t'){
+	for(int i = 0 ; i < strlen(ligne) ; i++){
+		if(ligne[i] == '\t'){
 			curCat = i;
 		}
-		if(templigne[i] == '-' && templigne[i-1] ==' ' && templigne[i+1] == ' '){
+		if(ligne[i] == '-' && ligne[i-1] ==' ' && ligne[i+1] == ' '){
 			cur = i;
 		}
 	}
 
-	//Déplacement du pointeur sur la ligne pour la copie des caractères de mot
-	*mot = strndup(templigne,(size_t)(curCat));
-
-	//Déplacement du pointeur sur la ligne pour la copie des caractères de cat
-	templigne = ligne + strlen(*mot) + 1;
-	//printf("tempLigne : %s\n",templigne);
-	*cat = strndup(templigne, (cur - curCat)-2);
-	printf("mot(getOri) : %s|\ncat(getOri) : %s|\n",*mot,*cat);
+	//Récupération de mot et cat :
+		//mot
+	size_t sizeMot = curCat;
+	*mot = strndup(ligne,sizeMot);
+		//cat
+	size_t sizeCat = cur- curCat -2;
+	*cat = strndup(ligne+curCat+1,sizeCat);
+	
+	//DEBUG
+	//printf("mot : |%s| cat : |%s|\n",*mot,*cat);
 	return;
 }//Fonctionne
 

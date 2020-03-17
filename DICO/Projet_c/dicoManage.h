@@ -6,12 +6,7 @@
 #include <assert.h>
 #include <string.h>
 #define TAILLE_MAX 1000
-#define TAILLE_MAXD 7000
-#define cdr(x) (x)->cdr
-#define original(x) (x)->original
-#define traductions(x) (x)->traductions
-#define mot(x) (x)->mot
-#define cat(x) (x)->cat
+
 
 
 
@@ -22,7 +17,7 @@ typedef struct Base{
 } base;
 
 typedef struct Traductions{
-	base* traductions;
+	base traductions;
 	struct Traductions* cdr;
 }*traductions;
 

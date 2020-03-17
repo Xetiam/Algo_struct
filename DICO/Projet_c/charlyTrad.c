@@ -2,7 +2,7 @@
 /// Auteur : Lepiller Charly //////////// Date : 28/02/2020///
 //////////////////////////////////////////////////////////////
 #include "charlyTrad.h"
-
+static void viderBuffer(void);
 
 int main(int argc, string argv[]){
 	//Initialisation des variables
@@ -17,13 +17,13 @@ int main(int argc, string argv[]){
 		dicoTab = "./tabDico/francais-italien_snp.tab";
 	}
 	else if(strcmp(choixUser,"2") == 0){
-		dicoTab = "./tabDico/italien-francais_snp.tab";
+		dicoTab = "./tabDico/échantillon.tab";
 	}
 	entry dicoEntry = formatageDico(dicoTab);
 
 		//Récupération du mot que l'utilisateur souhaite traduire
 	printf("Veuillez entrer le mot ou l'expression à traduire : \n");
-	//printf("DEBUG\n");
+	viderBuffer();
 	fgets(motUser, sizeof(motUser), stdin);
 	//Retrait du retour à la ligne pour pouvoir effectuer la comparaison
 	strtok(motUser,"\n");
@@ -34,4 +34,10 @@ int main(int argc, string argv[]){
 
 
 	return 0;
+}
+
+/* Fonction pour vider le buffer stdin */
+static void viderBuffer(void){
+     int c;
+     while ( ( c=getchar() ) != '\n' && c != EOF );
 }

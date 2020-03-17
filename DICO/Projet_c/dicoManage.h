@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#define TAILLE_MAX 1000
+#define TAILLE_MAX 100
 
 
 
@@ -17,7 +17,7 @@ typedef struct Base{
 } base;
 
 typedef struct Traductions{
-	base traductions;
+	base* traductions;
 	struct Traductions* cdr;
 }*traductions;
 
@@ -37,3 +37,4 @@ void affichEntry(entry entry);
 
 /* Fonction pour chercher et renvoyé l'entrée correspondant à la demande utilisateur */
 entry searchEntry(entry dico,string motUser);
+

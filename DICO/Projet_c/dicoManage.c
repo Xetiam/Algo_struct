@@ -35,20 +35,21 @@ entry searchEntry(entry dico,string motUser){
 void affichEntry(entry entry){
 	printf("Le mot %s %s se dit :\n",entry->original.mot,entry->original.cat);
 	do{
-		printf("\t%s %s\n",entry->traductions->traductions.mot,entry->traductions->traductions.cat);
+		printf("\t%s %s\n",entry->traductions->traductions->mot,entry->traductions->traductions->cat);
 		entry->traductions = entry->traductions->cdr;
 	}while(entry->traductions != NULL);
 	return;
 }//Fonctionne
 
-/* Fonction de construction part Traductions d'une entry et qui fait pointer cdr sur la trad suivante si elle existe */
+/* Fonction de construction part Traductions d'une entry */
 void getTraduction(string const ligne, string* mot, string* cat){
 	//Initialisation des variables
 	int cur = 0;
 	int curCat = 0;
-
+	string templigne = NULL;
 	// Copie de ligne car constante
-	string templigne = strdup(ligne);
+	templigne = (string) malloc(sizeof(ligne));
+	strcpy(templigne,ligne);
 
 	//Parcour de la ligne pour trouver le début de la partie traduction 
 	//ainsi que le début de la catégorie de la trad
@@ -71,7 +72,7 @@ void getTraduction(string const ligne, string* mot, string* cat){
 	templigne = ligne + curCat;
 	size_t sizeCat =(size_t)(strlen(templigne)-1);
 	*cat = strndup(templigne, sizeCat);
-	//printf("mot(getTrad) : %s|\ncat(getTrad) : %s|\n",*mot,*cat);
+	printf("mot(getTrad) : %s|\ncat(getTrad) : %s|\n",*mot,*cat);
 	return;
 }//Fonctionne
 
@@ -79,9 +80,12 @@ void getOriginal(string const ligne, string* mot, string* cat){
 	//Initialisation des variables
 	int cur = 0;
 	int curCat = 0;
+	string templigne = NULL;
+
 	// Copie de ligne car constante
-	//Segfault à l'allocation
-	string templigne = strdup(ligne);
+
+	templigne = (string) malloc(sizeof(ligne));
+	strcpy(templigne,ligne);
 
 	//Parcour de la ligne pour trouver le début de la partie traduction 
 	//ainsi que le début de la catégorie de la trad
@@ -101,7 +105,7 @@ void getOriginal(string const ligne, string* mot, string* cat){
 	templigne = ligne + strlen(*mot) + 1;
 	//printf("tempLigne : %s\n",templigne);
 	*cat = strndup(templigne, (cur - curCat)-2);
-	//printf("mot(getOri) : %s|\ncat(getOri) : %s|\n",*mot,*cat);
+	printf("mot(getOri) : %s|\ncat(getOri) : %s|\n",*mot,*cat);
 	return;
 }//Fonctionne
 
@@ -125,8 +129,15 @@ entry formatageDico(string tabDico){
 	getOriginal(ligne, &startDicoEntry->original.mot, &startDicoEntry->original.cat);
 		//Traduction
 	startDicoEntry->traductions = (struct Traductions*) malloc(sizeof(struct Traductions*));
-	getTraduction(ligne, &startDicoEntry->traductions->traductions.mot, &startDicoEntry->traductions->traductions.cat);
+	startDicoEntry->traductions->traductions = (struct Base*) malloc(sizeof(struct Base*));
+	getTraduction(ligne, &startDicoEntry->traductions->traductions->mot, &startDicoEntry->traductions->traductions->cat);
 	startTrad = startDicoEntry->traductions;
+
+	//DEBUG
+	//printf("Tentative d'affichage de la première entrée :\n");
+	//affichEntry(startDicoEntry);
+
+
 	//Copie du start dans le cur pour commencer la fabrication de la liste dans une boucle
 	curDicoEntry = startDicoEntry;
 	
@@ -135,8 +146,7 @@ entry formatageDico(string tabDico){
 
 	//Boucle de fabrication de la liste
 	while(fgets(ligne,TAILLE_MAX,dico)!=NULL){
-		tempLigne = (string) malloc(sizeof(ligne));
-		strcpy(tempLigne,ligne);
+		tempLigne = strdup(ligne);
 		//Test pour savoir si la ligne en cours contient une traduction d'un nouveau original
 		if(strcmp(strtok(tempLigne,"\t"),curDicoEntry->original.mot) != 0){
 			//Avancement du curseur
@@ -152,24 +162,13 @@ entry formatageDico(string tabDico){
 
 				//Allocation de la mémoire pour stocker la ou les traductions
 			curDicoEntry->traductions = (struct Traductions*) malloc(sizeof(struct Traductions*));
+			curDicoEntry->traductions->traductions = (struct Base*) malloc(sizeof(struct Base*));
 
-				//Instaciation de l'original et de la première traduction
-
-			//DEBUG
-			printf("Je rentre dans getOrig, itération : %d\n",i);
+				//Instanciation de l'original et de la première traduction
 
 			getOriginal(ligne, &curDicoEntry->original.mot, &curDicoEntry->original.cat);//SEGFAULT (à cause du malloc. 
-			//sachant que c'est le fr qui pose problème donc getTrad si dans l'autre sens)
-			
-			printf("Je sors de getOri, itération : %d\n",i);
-
-			//DEBUG
-			printf("Je rentre dans getTrad, itération : %d\n",i);
-
-
-			getTraduction(ligne, &curDicoEntry->traductions->traductions.mot, &curDicoEntry->traductions->traductions.cat);
-
-			printf("Je sors de getTrad, itération : %d\n",i);
+						//sachant que c'est le fr qui pose problème donc getTrad si dans l'autre sens)(ou peut être manque de place mémoire?)
+			getTraduction(ligne, &curDicoEntry->traductions->traductions->mot, &curDicoEntry->traductions->traductions->cat);
 
 				//Enregistrement de l'adresse de la première traduction de l'entrée
 			startTrad = curDicoEntry->traductions;
@@ -180,13 +179,16 @@ entry formatageDico(string tabDico){
 			curDicoEntry->traductions->cdr = (struct Traductions*) malloc(sizeof(struct Traductions*));
 				//Déplacement du pointeur cur->traductions sur une traduction suivante
 			curDicoEntry->traductions = curDicoEntry->traductions->cdr;
+			curDicoEntry->traductions->traductions = (struct Base*) malloc(sizeof(struct Base*));
 
 				//Enregistrement de la traduction suivante
-			getTraduction(ligne,&curDicoEntry->traductions->traductions.mot, &curDicoEntry->traductions->traductions.cat);
+			getTraduction(ligne,&curDicoEntry->traductions->traductions->mot, &curDicoEntry->traductions->traductions->cat);
 		}
 
 		//DEBUG
+		printf("%d\n",i);
 		i++;
+		
 	}
 	//Création d'un entrée NULL pour finir le dictionnaire
 	curDicoEntry->cdr = NULL;

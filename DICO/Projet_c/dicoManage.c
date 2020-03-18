@@ -29,17 +29,19 @@ entry searchEntry(entry dico,string motUser){
 	}
 	printf("Le mot entré n'a pas de traduction disponible dans ce dictionnaire.\n");
 	return NULL;
-}//Fonctionne
+}
 
 /*Fonction qui affiche le mot original et toutes ses traductions */
 void affichEntry(entry entry){
-	printf("Le mot %s %s se dit :\n",entry->original.mot,entry->original.cat);
-	do{
-		printf("\t%s %s\n",entry->traductions->traductions->mot,entry->traductions->traductions->cat);
+	printf("%s %s se dit :",entry->original.mot,entry->original.cat);
+	printf(" %s %s\n",entry->traductions->traductions->mot,entry->traductions->traductions->cat);
+	entry->traductions = entry->traductions->cdr;
+	while(entry->traductions != NULL){
+		printf("\t\t%s %s\n",entry->traductions->traductions->mot,entry->traductions->traductions->cat);
 		entry->traductions = entry->traductions->cdr;
-	}while(entry->traductions != NULL);
+	}
 	return;
-}//Fonctionne
+}
 
 /* Fonction de construction part Traductions d'une entry */
 void getTraduction(string const ligne, string* mot, string* cat){
@@ -69,7 +71,7 @@ void getTraduction(string const ligne, string* mot, string* cat){
 
 
 	return;
-}//Fonctionne
+}
 
 
 
@@ -100,13 +102,14 @@ void getOriginal(string const ligne, string* mot, string* cat){
 	//DEBUG
 	//printf("mot : |%s| cat : |%s|\n",*mot,*cat);
 	return;
-}//Fonctionne
+}
 
 /* Fonction pour formater un .tab dans une liste chainée */
 entry formatageDico(string tabDico){
-	//DEBUG
-	string tempLigne = NULL;
 	//Initialisation des variables
+	string tempLigne = NULL;
+	string tempMot = NULL;
+	string tempCat = NULL;
 	FILE* dico = ffopen(tabDico,"r");
 	string ligne =(string) malloc(TAILLE_MAX*sizeof(string));
 		//Start est const pour conserver le début de la liste chaîné
@@ -167,6 +170,11 @@ entry formatageDico(string tabDico){
 			startTrad = curDicoEntry->traductions;
 		}
 		else{
+			//Enregistrement de la catégorie :
+			tempMot = (string) malloc(sizeof(string));
+			tempCat = (string) malloc(sizeof(string));
+			getOriginal(ligne,&tempMot,&tempCat);
+			free(tempMot);
 			//Création d'une nouvelle traduction pour l'entré
 				//Allocation de la mémoire pour une nouvelle traduction
 			curDicoEntry->traductions->cdr = (struct Traductions*) malloc(sizeof(struct Traductions*));
@@ -176,6 +184,11 @@ entry formatageDico(string tabDico){
 
 				//Enregistrement de la traduction suivante
 			getTraduction(ligne,&curDicoEntry->traductions->traductions->mot, &curDicoEntry->traductions->traductions->cat);
+			
+			//Récupération de la catégorie de l'original correspondant (Pour l'affichage)
+			strcat(tempCat," : ");
+			strcat(tempCat,curDicoEntry->traductions->traductions->mot);
+			curDicoEntry->traductions->traductions->mot = tempCat;
 		}
 
 		//DEBUG
@@ -186,4 +199,4 @@ entry formatageDico(string tabDico){
 	//Création d'un entrée NULL pour finir le dictionnaire
 	curDicoEntry->cdr = NULL;
 	return startDicoEntry;
-}//Segfault avec les dictionnaire complet (particularité des entrées : elles sont en français.)
+}

@@ -6,7 +6,6 @@
 void getTraduction(string const ligne, string* mot, string* cat);
 void getOriginal(string const ligne,string* mot, string* cat);
 FILE* ffopen(char* arg, char* mode);
-entry formatageDico(string tabDico);
 
 
 /* Fonction pour ouvrir un fichier */
